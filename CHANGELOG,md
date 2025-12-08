@@ -1,0 +1,40 @@
+# CHANGELOG.md
+
+All notable changes to this project will be documented in this file.
+
+This changelog is written for a multi-target mod where each release must state which loader and Minecraft version(s) it supports.
+
+## Unreleased
+
+### Added
+- 
+
+### Changed
+- 
+
+### Fixed
+- 
+
+## Release format
+
+Each release section should include:
+- Release version and date
+- Supported targets (loader + Minecraft versions)
+- Changes grouped by Added, Changed, Fixed
+- Links to key issues and PRs
+
+Example section
+
+### v1.2.3 (2025-12-08)
+
+Supported targets
+- Forge 1.20.2
+
+Added
+- 
+
+Changed
+- 
+
+Fixed
+- 

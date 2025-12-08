@@ -1,138 +1,160 @@
-# Porting guide: adding support for a new Minecraft version (Forge, NeoForge, Fabric)
+# docs/porting-guide.md
 
-This guide explains how to add a new Minecraft version target in this repository without breaking existing versions.
+This guide explains how to port Happy HTTP to a new Minecraft version for a given loader.
 
-The goal is a repository where each produced jar corresponds to one loader and one Minecraft version, and we can build all supported jars in one command.
+It is written for a repository that builds one jar per loader + Minecraft version module, with shared logic in `common/`.
+
+## Porting strategy
+
+We use a two-layer approach:
+
+- `common/`: shared logic, no Minecraft or loader API imports
+- `<loader>/mc_<version>/`: version-specific glue, registrations, and resources
+
+Porting should mostly be mechanical changes in the glue layer.
+
+If you find yourself rewriting large parts of shared logic, stop and document why in the issue or PR.
 
 ## Before you start
 
-1. Check the current support matrix  
-   See [docs/versions.md](versions.md).
+1) Check the support matrix
+- `docs/versions.md`
 
-2. Check if there is already a tracking issue  
-   If a compatibility tracker exists for the loader you are working on, coordinate there instead of opening a new issue.
+2) Check the active tracker issue
+- For example the Forge 1.21 tracker
 
-3. Pick one target at a time  
-   Do not try to port multiple versions in one PR. One version module per PR is the default.
+3) Pick one target
+- One loader
+- One Minecraft version line
+- One module at a time
 
-## Definitions
+4) Keep PR scope small
+- One version module per PR is the default
+- Avoid mixing ports with new features
 
-- **Common code**: shared logic that should behave the same across all versions and loaders.
-- **Version module**: a Gradle module that builds exactly one jar for a specific loader and Minecraft version, for example `forge/mc_1_21_1`.
+## Step-by-step port workflow
 
-## What “done” means for a port
+### Step 1: create the target module
 
-A version port is considered complete when:
+Create a new module under the loader folder.
 
-- The module builds successfully
-- The game launches (dev client)
-- A world loads
-- Both blocks can be placed and configured
-- Receiver triggers redstone on request
-- Sender sends a request on redstone input
-- Config file generates correctly and settings take effect
+Example
+- `forge/mc_1_21_1/`
 
-If you can build but not run, mark the target as **Beta** in the version matrix and document what remains.
-
-## Where changes should go
-
-Put code in `common/` when:
-
-- It is pure logic (parsing, validation, configuration models, utilities)
-- It can be expressed behind a small interface without importing Minecraft or loader classes
-- It should behave identically for all targets
-
-Put code in a version module when:
-
-- It touches Minecraft APIs that differ between versions
-- It touches loader APIs
-- It uses mixins targeting version-specific class or method signatures
-- It is registration, entrypoints, or event wiring
-- It is version-specific metadata or resources
-
-Rule of thumb
-
-- If a change would only apply to one Minecraft version, it probably belongs in that version module.
-- If a change should apply everywhere, it belongs in `common/`.
-
-## Step-by-step: add a new Minecraft version module
-
-This assumes you are adding a new version under an existing loader, for example Forge.
-
-### 1) Create the module folder
-
-Copy the closest existing module.
-
-Example target:
-- From: `forge/mc_1_20_2`
-- To: `forge/mc_1_21_1`
-
-Keep the new module as similar as possible at first.
-
-### 2) Wire the module into Gradle
-
-- Add the new module to `settings.gradle` includes
-- Ensure it depends on `common` (and any loader-common module if present)
-- Ensure the module produces a jar with a unique classifier including loader + mc version
-
-Expected outcome
-- Gradle sees the module
-- The module appears in `./gradlew projects`
-
-### 3) Update the build configuration for the new target
-
-In the new module’s `build.gradle` (or shared gradle conventions if used), update:
-
+Copy only what is needed from the baseline module, then adjust:
 - Minecraft version
-- Forge/NeoForge/Fabric version
-- Mappings configuration
-- Any dependency versions that are tied to the Minecraft version
+- Forge version (and mappings)
+- mod metadata as required by the loader
 
-Do not update old modules as part of this change unless required to keep the build working.
+Ensure jar naming includes loader and Minecraft version.
 
-### 4) Fix compilation errors with a strict strategy
+### Step 2: make it compile
 
-Your goal is to keep the new module thin. When you hit errors:
+Run:
 
-- If the broken code is version-specific glue, fix it in the new module only
-- If the broken code is shared logic, move or refactor it into `common`
+```sh
+./gradlew :forge:mc_1_21_1:build
+```
 
-Avoid copying big chunks from old modules into the new one.
+Fix compilation errors in the module.
 
-### 5) Update mixins cautiously
+Rules
+- Do not “fix” compile errors by duplicating shared logic
+- If a change belongs in `common/`, move it there only if it is truly shared and does not require Minecraft APIs
 
-Mixins are a common source of version-specific breakage.
+### Step 3: get to main menu
 
-Guidelines
-- Keep mixin configs inside the version module
-- Prefer fewer mixins and smaller targets
-- If a mixin target signature changes, fix it only in the affected module
-- Document the change in the module’s notes or in the tracker issue
+Run the dev client for the module (task names vary by setup). Your goal is:
+- game reaches main menu without crashing
 
-### 6) Confirm resources and metadata
+If it crashes:
+- capture `latest.log` and crash report
+- link them in the tracking issue
+- commit minimal fixes that make progress
 
-For Forge/NeoForge, ensure `META-INF/mods.toml` exists and matches the target.
+### Step 4: world load and basic placement
 
-If a resource format changes between Minecraft versions:
-- keep version-specific variants in the version module
-- keep shared assets in `common` only when safe
+- Create a new world
+- Ensure the mod loads and blocks appear in creative inventory
+- Place each block without crashing
 
-### 7) Run the minimum smoke test
+### Step 5: functional smoke test
 
-At minimum
-- launch the dev client for the new module
-- create/load a world
-- place and configure both blocks
+Minimum smoke test:
 
-Capture evidence
-- if it fails, attach logs to the issue
-- if it works, update the version matrix
+HTTP Receiver
+- Place block
+- Configure endpoint
+- Send an HTTP request
+- Verify it triggers redstone output
 
-### 8) Update docs/versions.md
+HTTP Sender
+- Place block
+- Configure target URL and method
+- Trigger with redstone
+- Verify request is sent
 
-- Add or update the row for the new target
-- Set status to Beta or Stable
-- Add one sentence note if anything is missing
-- Link the tracking issue
+Config
+- Confirm `happyhttpmod-config.toml` is created
+- Confirm binding behaviour and port settings apply
 
-## Testing checklist (copy into the
+### Step 6: update docs and tracking
+
+- Update `docs/versions.md` status (Untested → Beta when smoke test passes)
+- Link the PR in the tracker issue
+- If you found a repeatable breakpoint, open or update a compatibility issue with logs
+
+## How to handle common breakpoints
+
+### Renamed or moved Minecraft classes
+
+Fix in the version module first.
+
+Only touch `common/` if the shared interface needs to change and you can keep it free of Minecraft imports.
+
+### Registry and initialisation changes
+
+Loader APIs and lifecycle ordering change between versions.
+
+Prefer to:
+- keep registration and init in the version module
+- expose only stable “hooks” into common logic
+
+### Networking and screens
+
+UI and networking are often version-sensitive.
+Keep those components version-local.
+
+### HTTP server lifecycle
+
+Ensure the HTTP server:
+- starts at a safe time
+- does not block the game thread
+- stops cleanly on shutdown
+- binds predictably to configured IP/port
+
+If lifecycle differs across versions, implement the lifecycle in the version module and keep request handling shared.
+
+## What to include in your PR
+
+- Which target module you ported
+- Build command that succeeds
+- Smoke test results (or which part fails)
+- Logs/crash reports if you fixed a crash
+- Any doc updates (especially `docs/versions.md`)
+
+## When to stop and ask for alignment
+
+Stop and write into the issue if:
+- you need a cross-cutting architectural change
+- you want to introduce a new dependency used across modules
+- you think the module structure plan needs to change
+
+Keep changes intentional and recorded.
+
+## Linked docs
+
+- Repo layout rules: `docs/repo-layout.md`
+- Testing: `docs/testing.md`
+- Build and release: `docs/build-and-release.md`
+- Versions matrix: `docs/versions.md`

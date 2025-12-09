@@ -135,7 +135,7 @@ Guidelines for contributing to the project.
 - Push to the branch (git push origin feature/AmazingFeature).
 - Open a pull request.
 
-[Join our Discord server](https://discord.gg/G74dTm9D8m)
+[Join our Discord server](https://discord.gg/DVuQSV27pa)
 
 ## Support
 

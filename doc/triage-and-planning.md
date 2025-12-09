@@ -17,7 +17,7 @@ This is good, but without rules it will produce noise and scattered progress.
 
 - Compatibility status lives in `docs/versions.md`
 - Work items live in GitHub Issues and PRs
-- Discord is for quick coordination, not the permanent record
+- Discord is for quick coordination, not the permanent record [Join our Discord server](https://discord.gg/DVuQSV27pa)
 
 If a decision affects code or compatibility claims, it must be recorded in GitHub.
 

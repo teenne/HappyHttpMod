@@ -40,7 +40,7 @@ Use for
 
 Rules
 - Do not rely on Discord as the only place decisions are recorded
-- If Discord discussion changes direction, summarise it in the relevant GitHub issue
+- If Discord discussion changes direction, summarise it in the relevant GitHub issue [Join our Discord server](https://discord.gg/DVuQSV27pa)
 - Use Discord to guide people to the right GitHub issue or doc
 
 ## How a piece of work should flow
@@ -113,5 +113,6 @@ Good first contributions
 - Prefer short, factual updates
 - Use GitHub for persistent information
 - Use Discord for speed, then write the conclusion into GitHub
+- [Join our Discord server](https://discord.gg/DVuQSV27pa)
 
 This workflow is designed to keep the project scalable as contributors join.

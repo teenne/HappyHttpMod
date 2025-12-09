@@ -27,7 +27,7 @@ This project and everyone participating in it is governed by the [Contributor Co
 
 We use two channels:
 
-- Discord is for quick coordination, questions, and helping contributors get unblocked
+- Discord is for quick coordination, questions, and helping contributors get unblocked [Join our Discord server](https://discord.gg/DVuQSV27pa)
 - GitHub is the source of truth for decisions, work items, and changes
 
 Rules
@@ -292,7 +292,7 @@ Recommended labels
 
 Discord
 
-- Use Discord for quick questions and coordination
+- Use Discord for quick questions and coordination [Join our Discord server](https://discord.gg/DVuQSV27pa)
 - If the question results in a change request, please create or link a GitHub issue
 
 Be kind and constructive

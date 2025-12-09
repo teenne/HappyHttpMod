@@ -24,7 +24,7 @@ Notes
 | --- | --- | --- | --- | --- |
 | Forge | 1.20.2 | Stable | Current working baseline | (link) |
 | Forge | 1.20.3–1.20.6 | Planned | Not started | (link) |
-| Forge | 1.21.0–1.21.10 | Planned | Not started | (link) |
+| NeoForge | 1.21.0–1.21.10 | Planned | Not started | (link) |
 | NeoForge | 1.21.x | Planned | Not started | (link) |
 | Fabric | TBD | Planned | Not started | (link) |
 
@@ -32,7 +32,7 @@ Replace “(link)” with the GitHub issue link(s) once the tracker issue exists
 
 ## Current focus
 
-- Primary target: **Forge 1.21.10** (port from Forge 1.20.2)
+- Primary target: **NeoForge 1.21.10** (port from Forge 1.20.2)
 - Secondary: stabilise the multi-module build so multiple versions can be built from one repo
 
 ## What counts as “works”

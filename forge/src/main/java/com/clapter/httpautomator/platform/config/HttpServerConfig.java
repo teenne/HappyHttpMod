@@ -6,12 +6,15 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class HttpServerConfig implements IHttpServerConfig {
 
-    //public static final ForgeConfigSpec COMMON_SPEC;
+    public static final ForgeConfigSpec COMMON_SPEC;
+    public static final HttpServerConfig INSTANCE;
+    
     private final ForgeConfigSpec.ConfigValue<Integer> port;
 
     static {
         Pair<HttpServerConfig, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(HttpServerConfig::new);
-
+        INSTANCE = pair.getLeft();
+        COMMON_SPEC = pair.getRight();
     }
 
     public HttpServerConfig(ForgeConfigSpec.Builder builder) {
@@ -19,14 +22,14 @@ public class HttpServerConfig implements IHttpServerConfig {
 
         port = builder
                 .comment("Http Server Port")
-                .define("port", 8080);
+                .defineInRange("port", 8080, 0, 65535);
 
         builder.pop();
     }
 
     @Override
     public int getPort() {
-        return COMMON_SPEC.getInt("port");
+        return port.get();
     }
 
 }

@@ -78,8 +78,8 @@ This Minecraft mod introduces two custom blocks that interact with webhooks and 
 ## Usage
 
 1. **Configure the Webhook Server**:
-   - After the first run, a configuration file named `happyhttpmod-config.toml` will be generated in the Minecraft configuration directory (usually `.minecraft/config/`).
-   - Edit the `happyhttpmod-config.toml` file to set up the webhook server's IP address and port:
+   - After the first run, a configuration file named `happyhttpmod-common.toml` will be generated in the Minecraft configuration directory (usually `.minecraft/config/`).
+   - Edit the `happyhttpmod-common.toml` file to set up the webhook server's IP address and port:
        ``` 
       ["Http Server Settings"]
     	#Http Server Port
@@ -112,8 +112,8 @@ This Minecraft mod introduces two custom blocks that interact with webhooks and 
 
 ## Configuration
 **Configure the Webhook Server**:
-   - After the first run, a configuration file named `happyhttpmod-config.toml` will be generated in the Minecraft configuration directory (usually `.minecraft/config/`).
-   - Edit the `happyhttpmod-config.toml` file to set up the webhook server's IP address and port:
+   - After the first run, a configuration file named `happyhttpmod-common.toml` will be generated in the Minecraft configuration directory (usually `.minecraft/config/`).
+   - Edit the `happyhttpmod-common.toml` file to set up the webhook server's IP address and port:
      ```      
       ["Http Server Settings"]
     	#Http Server Port
